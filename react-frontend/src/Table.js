@@ -31,11 +31,11 @@ function TableBody(props) {
 }
 
 
-function Table(props) {
+function Table({characterData,removeCharacter}) {
     return (
       <table>
         <TableHeader />
-        <TableBody characterData={props.characterData} />
+        <TableBody characterData={characterData} removeCharacter = {removeCharacter}/>
       </table>
     );
 }
