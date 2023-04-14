@@ -59,6 +59,33 @@ const findUserByName = (name) => {
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
 
+app.post('/users', (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.status(200).end();
+});
+
+function addUser(user){
+    users['users_list'].push(user);
+}
+
+app.delete('/users/:id', (req, res) => {
+    const id = req.params['id']; //or req.params.id
+    let result = removeUserById(id);
+    if (result === undefined || result.length == 0)
+        res.status(404).send('Resource not found.');
+    else {
+        result = {users_list: result};
+        res.send(result);
+    }
+});
+
+function removeUserById(id) {
+    const updatedList = users['users_list'].filter((user) => user['id'] !== id);
+    users['users_list'] = updatedList; // update the original array with the updated list
+    return updatedList;
+  }
+
 app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = findUserById(id);
@@ -74,6 +101,24 @@ function findUserById(id) {
     return users['users_list'].find( (user) => user['id'] === id); // or line below
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
+
+
+app.get('/users/:job/:name', (req, res) => {
+    const job = req.params.job;
+    const name = req.params.name;
+    let result = findUsersByNameAndJob(job, name);
+    if (result.length === 0) {
+      res.status(404).send('Resource not found.');
+    } else {
+      result = { users_list: result };
+      res.send(result);
+    }
+  });
+  
+function findUsersByNameAndJob(job, name) {
+    return users['users_list'].filter((user) => user['job'] === job && user['name'] === name);
+}
+
 /*Then, we set up our first API endpoint with the app.get function. 
 This sets the endpoint to accept http GET requests. 
 And the app.get has two arguments. First, '/' 
