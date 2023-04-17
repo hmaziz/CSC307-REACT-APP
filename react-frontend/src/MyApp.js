@@ -5,20 +5,37 @@ import Table from './Table'
 import Form from './Form';
 import axios from 'axios';
 
-
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
 //things go blank when this is put in 
-function removeOneCharacter (index) {
-  const updated = characters.filter((character, i) => {
-      return i !== index
+// function removeOneCharacter (index) {
+
+//   const updated = characters.filter((character, i) => {
+//       return i !== index
+//     });
+//     setCharacters(updated);
+//   }
+function removeOneCharacter(index) {
+  const characterToDelete = characters[index];
+  axios.delete(`http://localhost:8000/users/${characterToDelete.id}`)
+    .then(response => {
+      if (response.status === 200) {
+        const updated = characters.filter((character, i) => {
+          return i !== index;
+        });
+        setCharacters(updated);
+      } else {
+        console.log("User could not be deleted.");
+      }
+    })
+    .catch(error => {
+      console.log(error);
     });
-    setCharacters(updated);
-  }
-  function updateList(person) {
-    setCharacters([...characters, person]);
-  }
+}
+  // function updateList(person) {
+  //   setCharacters([...characters, person]);
+  // }
   return (
     <div className="container">
       <Table characterData={characters} removeCharacter={removeOneCharacter} />
@@ -36,7 +53,10 @@ function removeOneCharacter (index) {
        console.log(error); 
        return false;         
     }
+    
  }
+
+ //I guess this is not being used 
   useEffect(() => 
     {fetchAll().then( result => 
       {if (result)
@@ -58,7 +78,7 @@ function removeOneCharacter (index) {
     makePostCall(person).then( result => {
       if (result && result.status === 201) {
         const newUser = result.data;
-        setCharacters([...characters, newUser] );
+        setCharacters([...characters, newUser]);
     } 
       else {
         // do not update the state if the response is not a 201 status code

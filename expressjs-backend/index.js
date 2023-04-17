@@ -62,11 +62,6 @@ const findUserByName = (name) => {
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
 
-app.post('/users', (req, res) => {
-    const userToAdd = req.body;
-    addUser(userToAdd);
-    res.status(201).end();
-});
 
 
 function generateRandomId() {
@@ -77,13 +72,21 @@ function generateRandomId() {
     return `${letterSequence}${numberSequence}`;
 }
 
-function addUser(user){
+function addUser(user, res){
     const id = generateRandomId();
     const userWithId = {id,...user};
     users['users_list'].push(userWithId);
     //sending back new object with id with 201 response code in the case that it works 
     res.status(201).send(userWithId);
 }
+
+app.post('/users', (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd, res);
+});
+
+
+
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = removeUserById(id);
