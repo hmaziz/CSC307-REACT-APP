@@ -15,33 +15,33 @@ app.get('/', (req, res) => {
 const users = { 
     users_list :
     [
-       { 
-          id : 'xyz789',
-          name : 'Charlie',
-          job: 'Janitor',
-       },
-       {
-          id : 'abc123', 
-          name: 'Mac',
-          job: 'Bouncer',
-       },
-       {
-          id : 'ppp222', 
-          name: 'Mac',
-          job: 'Professor',
-       }, 
-       {
-          id: 'yat999', 
-          name: 'Dee',
-          job: 'Aspring actress',
-       },
-       {
-          id: 'zap555', 
-          name: 'Dennis',
-          job: 'Bartender',
-       }
+        { 
+            id : 'xyz789',
+            name : 'Charlie',
+            job: 'Janitor',
+         },
+         {
+            id : 'abc123', 
+            name: 'Mac',
+            job: 'Bouncer',
+         },
+         {
+            id : 'ppp222', 
+            name: 'Mac',
+            job: 'Professor',
+         }, 
+         {
+            id: 'yat999', 
+            name: 'Dee',
+            job: 'Aspring actress',
+         },
+         {
+            id: 'zap555', 
+            name: 'Dennis',
+            job: 'Bartender',
+         }
     ]
- }
+}
 
 // app.get('/users', (req, res) => {
 //     res.send(users);
@@ -65,13 +65,25 @@ const findUserByName = (name) => {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(200).end();
+    res.status(201).end();
 });
 
-function addUser(user){
-    users['users_list'].push(user);
+
+function generateRandomId() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const letterIndex = Math.floor(Math.random() * letters.length);
+    const letterSequence = letters.substring(letterIndex, letterIndex + 3);
+    const numberSequence = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return `${letterSequence}${numberSequence}`;
 }
 
+function addUser(user){
+    const id = generateRandomId();
+    const userWithId = {id,...user};
+    users['users_list'].push(userWithId);
+    //sending back new object with id with 201 response code in the case that it works 
+    res.status(201).send(userWithId);
+}
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = removeUserById(id);

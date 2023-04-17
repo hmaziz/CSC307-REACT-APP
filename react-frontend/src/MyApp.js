@@ -56,8 +56,14 @@ function removeOneCharacter (index) {
   }
   function updateList(person) { 
     makePostCall(person).then( result => {
-      if (result && result.status === 200)
-        setCharacters([...characters, person] );
+      if (result && result.status === 201) {
+        const newUser = result.data;
+        setCharacters([...characters, newUser] );
+    } 
+      else {
+        // do not update the state if the response is not a 201 status code
+        console.log("User could not be added to the list.");
+      }
     });
   }
 }
