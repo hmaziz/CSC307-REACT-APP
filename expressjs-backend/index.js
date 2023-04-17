@@ -1,9 +1,12 @@
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const port = 8000;
 /*On the fourth line, we set up our express app to
 process incoming data in JSON format. With that,
 Express (as a middleware) will allow us to access JSON data seamlessly in memory.*/
+
+app.use(cors());
 app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Hello World!');
